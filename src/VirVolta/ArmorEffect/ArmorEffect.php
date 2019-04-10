@@ -1,13 +1,11 @@
 <?php
 
-#FUCK YUMIKO
 
-namespace VirVolta;
+namespace VirVolta\ArmorEffect;
 
 use pocketmine\entity\Effect;
 use pocketmine\entity\EffectInstance;
 use pocketmine\event\entity\EntityArmorChangeEvent;
-use pocketmine\item\Item;
 use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\event\Listener;
@@ -16,6 +14,19 @@ use pocketmine\utils\Config;
 class ArmorEffect extends PluginBase implements Listener
 {
     private $config;
+
+    /**
+     * @param mixed $config
+     */
+    public function setData(Config$config): void
+    {
+        $this->config = $config;
+    }
+    
+    public function getData(): Config
+    {
+        return $this->config;
+    }
 
     public function onEnable()
     {
@@ -28,7 +39,7 @@ class ArmorEffect extends PluginBase implements Listener
             $this->saveResource('config.yml');
         }
 
-        $this->config = new Config($this->getDataFolder() . 'config.yml', Config::YAML);
+        $this->setData(new Config($this->getDataFolder() . 'config.yml', Config::YAML));
     }
 
     public function onArmor(EntityArmorChangeEvent $event)
@@ -40,14 +51,14 @@ class ArmorEffect extends PluginBase implements Listener
             $new = $event->getNewItem();
             $old = $event->getOldItem();
 
-            $configs = $this->config->getAll();
+            $configs = $this->getData()->getAll();
             $ids = array_keys($configs);
 
             if (in_array($new->getId(), $ids)) {
 
-                $array = $this->config->getAll()[$new->getId()];
+                $array = $this->getData()->getAll()[$new->getId()];
 
-                if ($array["message"] !== " ") {
+                if ($array["message"] != null) {
 
                     $player->sendMessage($array["message"]);
 
@@ -70,7 +81,7 @@ class ArmorEffect extends PluginBase implements Listener
 
             } else if (in_array($old->getId(), $ids)) {
 
-                $array = $this->config->getAll()[$old->getId()];
+                $array = $this->getData()->getAll()[$old->getId()];
                 $effects = $array["effect"];
 
                 foreach ($effects as $effectid => $arrayeffect) {
