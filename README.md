@@ -16,5 +16,3 @@ id instance of Armor:
       durability: time in seconde
       visible: true or false particules
 ```
-
-You can join our Discord [here](https://discord.gg/Vyznuka)
